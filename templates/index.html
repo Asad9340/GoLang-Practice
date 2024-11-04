@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTMX Form</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+  </head>
+  <body>
+    <div class="formContainer">
+      <h1>Registration Form</h1>
+      <div class="formWrapper">
+        <form
+          id="registrationForm"
+          hx-post="/submit-form"
+          hx-target="#tableBody"
+          hx-swap="innerHTML"
+        >
+          <div class="formGroup">
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName" required />
+          </div>
+          <div class="formGroup">
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" required />
+          </div>
+          <div class="formGroup">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+          <div class="formGroup">
+            <label for="mobile">Mobile:</label>
+            <input type="tel" id="mobile" name="mobile" required />
+          </div>
+          <div class="formGroup">
+            <label for="country">Country:</label>
+            <select id="country" name="country" required>
+              <option value="">Select your country</option>
+              <option value="USA">USA</option>
+              <option value="Canada">Canada</option>
+              <option value="UK">UK</option>
+              <option value="Australia">Australia</option>
+              <option value="India">India</option>
+            </select>
+          </div>
+          <div class="formGroup">
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob" required />
+          </div>
+          <div class="formGroup">
+            <button type="submit">Submit</button>
+          </div>
+          <input type="hidden" id="editIndex" name="editIndex" value="-1" />
+        </form>
+      </div>
+    </div>
+    <div id="response" class="responseContainer">
+      <h1>Output Data</h1>
+      <div class="table">
+        <table class="tableContainer">
+          <thead>
+            <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Mobile</th>
+              <th>Country</th>
+              <th>Date of Birth</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      let dataList = [];
+
+      document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('registrationForm').reset();
+      });
+
+      document.body.addEventListener('htmx:afterSwap', function (event) {
+        if (event.detail.target.id === 'tableBody') {
+          dataList = JSON.parse(event.detail.xhr.response);
+          renderTable();
+          document.getElementById('registrationForm').reset();
+          document.getElementById('editIndex').value = '-1';
+        }
+      });
+
+      function renderTable() {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+        dataList.forEach((item, index) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+                    <td>${item['First Name']}</td>
+                    <td>${item['Last Name']}</td>
+                    <td>${item.Email}</td>
+                    <td>${item.Mobile}</td>
+                    <td>${item.Country}</td>
+                    <td>${item['Date of Birth']}</td>
+                    <td style="display:flex;gap:10px">
+                        <button onclick="editRow(${index})">Edit</button>
+                        <button onclick="deleteRow(${index})">Delete</button>
+                    </td>`;
+          tbody.appendChild(row);
+        });
+      }
+
+      function editRow(index) {
+        const item = dataList[index];
+        document.getElementById('firstName').value = item['First Name'];
+        document.getElementById('lastName').value = item['Last Name'];
+        document.getElementById('email').value = item.Email;
+        document.getElementById('mobile').value = item.Mobile;
+        document.getElementById('country').value = item.Country;
+        document.getElementById('dob').value = item['Date of Birth'];
+        document.getElementById('editIndex').value = index;
+      }
+
+      function deleteRow(index) {
+        if (confirm('Are you sure you want to delete this entry?')) {
+          fetch(`/delete-entry?index=${index}`, {
+            method: 'DELETE',
+          }).then(response => {
+            if (response.ok) {
+              dataList.splice(index, 1);
+              renderTable();
+            } else {
+              console.error('Error deleting entry');
+            }
+          });
+        }
+      }
+    </script>
+  </body>
+</html>

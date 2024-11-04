@@ -1,0 +1,86 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f9;
+  margin: 50px;
+}
+h1 {
+  text-align: center;
+}
+.formContainer {
+  background-color: #ffffff;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.formWrapper {
+  padding: 10px;
+}
+.formGroup {
+  margin-bottom: 15px;
+}
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+input {
+  min-width: 560px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.formWrapper select {
+  min-width: 582px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+button {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+input:focus,
+select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #0056b3;
+}
+.responseContainer {
+  max-width: 1160px;
+  margin: 50px auto;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+.table {
+  display: inline-flex;
+  justify-content: center;
+  background-color: gray;
+  color: white;
+  padding: 30px;
+}
+.tableContainer th,
+td,
+table {
+  padding: 5px 30px;
+  font-size: 16px;
+  font-weight: 400;
+  border: 1px solid white;
+  border-collapse: collapse;
+}
+th{
+    font-weight: 600;
+}
